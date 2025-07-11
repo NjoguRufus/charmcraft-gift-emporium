@@ -5,8 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { signInWithPopup } from "firebase/auth";
+import { signInWithPopup, signInWithRedirect } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -15,6 +16,7 @@ const Login = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const isMobile = useIsMobile();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,8 +31,12 @@ const Login = () => {
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     try {
-      await signInWithPopup(auth, googleProvider);
-      window.location.href = "/";
+      if (isMobile) {
+        await signInWithRedirect(auth, googleProvider);
+      } else {
+        await signInWithPopup(auth, googleProvider);
+        window.location.href = "/";
+      }
     } catch (error) {
       alert("Google sign-in failed");
     } finally {

@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -18,6 +20,7 @@ const Signup = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,10 +37,19 @@ const Signup = () => {
     
     setIsLoading(true);
     
-    // Here you would integrate with your authentication service
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    setIsLoading(false);
+    try {
+      await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+      setSuccess(true);
+      // Optionally, sign in the user (Firebase does this automatically)
+      // Redirect to home after a short delay
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1500);
+    } catch (error: any) {
+      alert(error.message || 'Account creation failed');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -65,120 +77,124 @@ const Signup = () => {
             </p>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="firstName">First Name</Label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            {success ? (
+              <div className="text-green-600 font-semibold text-center py-8">Account created! Redirecting...</div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="firstName">First Name</Label>
+                    <div className="relative">
+                      <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                      <Input
+                        id="firstName"
+                        placeholder="First name"
+                        value={formData.firstName}
+                        onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
+                        className="pl-10"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <Label htmlFor="lastName">Last Name</Label>
                     <Input
-                      id="firstName"
-                      placeholder="First name"
-                      value={formData.firstName}
-                      onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
+                      id="lastName"
+                      placeholder="Last name"
+                      value={formData.lastName}
+                      onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="email">Email Address</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="Enter your email"
+                      value={formData.email}
+                      onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                       className="pl-10"
                       required
                     />
                   </div>
                 </div>
+
                 <div>
-                  <Label htmlFor="lastName">Last Name</Label>
-                  <Input
-                    id="lastName"
-                    placeholder="Last name"
-                    value={formData.lastName}
-                    onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
-                    required
-                  />
+                  <Label htmlFor="password">Password</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                    <Input
+                      id="password"
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="Create a password"
+                      value={formData.password}
+                      onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
+                      className="pl-10 pr-10"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </div>
-              </div>
 
-              <div>
-                <Label htmlFor="email">Email Address</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="Enter your email"
-                    value={formData.email}
-                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                    className="pl-10"
-                    required
-                  />
+                <div>
+                  <Label htmlFor="confirmPassword">Confirm Password</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                    <Input
+                      id="confirmPassword"
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      placeholder="Confirm your password"
+                      value={formData.confirmPassword}
+                      onChange={(e) => setFormData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                      className="pl-10 pr-10"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    >
+                      {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </div>
-              </div>
 
-              <div>
-                <Label htmlFor="password">Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                  <Input
-                    id="password"
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="Create a password"
-                    value={formData.password}
-                    onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
-                    className="pl-10 pr-10"
-                    required
+                <div className="flex items-start space-x-2">
+                  <input
+                    type="checkbox"
+                    id="terms"
+                    checked={termsAccepted}
+                    onChange={(e) => setTermsAccepted(e.target.checked)}
+                    className="rounded border-border text-primary focus:ring-primary mt-1"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
+                  <label htmlFor="terms" className="text-sm text-foreground">
+                    I agree to the{' '}
+                    <Link to="/terms" className="text-primary hover:text-primary/80">
+                      Terms of Service
+                    </Link>{' '}
+                    and{' '}
+                    <Link to="/privacy" className="text-primary hover:text-primary/80">
+                      Privacy Policy
+                    </Link>
+                  </label>
                 </div>
-              </div>
 
-              <div>
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                  <Input
-                    id="confirmPassword"
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    placeholder="Confirm your password"
-                    value={formData.confirmPassword}
-                    onChange={(e) => setFormData(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                    className="pl-10 pr-10"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  >
-                    {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-2">
-                <input
-                  type="checkbox"
-                  id="terms"
-                  checked={termsAccepted}
-                  onChange={(e) => setTermsAccepted(e.target.checked)}
-                  className="rounded border-border text-primary focus:ring-primary mt-1"
-                />
-                <label htmlFor="terms" className="text-sm text-foreground">
-                  I agree to the{' '}
-                  <Link to="/terms" className="text-primary hover:text-primary/80">
-                    Terms of Service
-                  </Link>{' '}
-                  and{' '}
-                  <Link to="/privacy" className="text-primary hover:text-primary/80">
-                    Privacy Policy
-                  </Link>
-                </label>
-              </div>
-
-              <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
-                {isLoading ? 'Creating Account...' : 'Create Account'}
-              </Button>
-            </form>
+                <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
+                  {isLoading ? 'Creating Account...' : 'Create Account'}
+                </Button>
+              </form>
+            )}
 
             <div className="mt-6 text-center">
               <p className="text-sm text-muted-foreground">

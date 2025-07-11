@@ -28,22 +28,29 @@ const About = () => {
 
   const team = [
     {
-      name: 'Sarah Mitchell',
+      name: 'Lewis Kamau',
       role: 'Founder & CEO',
-      image: 'https://images.unsplash.com/photo-1494790108755-2616b9c4e2bb?w=300&h=300&fit=crop&crop=face',
-      bio: 'Passionate about creating meaningful connections through thoughtful gifting.'
+      bio: 'Visionary leader passionate about meaningful gifting.'
     },
     {
-      name: 'James Rodriguez',
+      name: 'Joy Bwarie',
       role: 'Head of Curation',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face',
-      bio: 'Expert in sourcing unique and premium products from around the world.'
+      bio: 'Expert in sourcing unique and premium products.'
     },
     {
-      name: 'Emily Chen',
+      name: 'Hanks Orang',
       role: 'Creative Director',
-      image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop&crop=face',
-      bio: 'Designs beautiful presentations that make every unboxing magical.'
+      bio: 'Designs beautiful presentations for every basket.'
+    },
+    {
+      name: 'Joy Mukiri',
+      role: 'Customer Experience',
+      bio: 'Ensures every customer has a memorable experience.'
+    },
+    {
+      name: 'Wisdom Ngugi',
+      role: 'Operations Manager',
+      bio: 'Keeps everything running smoothly behind the scenes.'
     }
   ];
 
@@ -188,11 +195,9 @@ const About = () => {
             {team.map((member, index) => (
               <Card key={index} className="text-center hover:shadow-card transition-shadow duration-300">
                 <CardContent className="pt-6">
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="w-24 h-24 rounded-full object-cover mx-auto mb-4"
-                  />
+                  <div className="w-24 h-24 rounded-full bg-gradient-primary flex items-center justify-center mx-auto mb-4 text-3xl font-bold text-primary-foreground">
+                    {member.name.split(' ').map(n => n[0]).join('')}
+                  </div>
                   <h3 className="text-xl font-semibold text-foreground mb-1">
                     {member.name}
                   </h3>

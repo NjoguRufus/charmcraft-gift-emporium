@@ -4,10 +4,15 @@ import { ShoppingCart, Heart, User, Menu, X, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/contexts/CartContext';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/contexts/AuthContext';
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { itemCount } = useCart();
+  const { user, logout } = useAuth();
+  const [open, setOpen] = useState(false);
 
   const navigation = [
     { name: 'Home', href: '/' },
@@ -16,6 +21,12 @@ const Navbar = () => {
     { name: 'About', href: '/about' },
     { name: 'Contact', href: '/contact' },
   ];
+
+  const handleLogout = async () => {
+    await logout();
+    setOpen(false);
+    window.location.href = "/login";
+  };
 
   return (
     <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
@@ -51,9 +62,45 @@ const Navbar = () => {
             <Button variant="ghost" size="icon" className="hover:bg-secondary">
               <Search className="w-5 h-5" />
             </Button>
-            <Button variant="ghost" size="icon" className="hover:bg-secondary">
-              <User className="w-5 h-5" />
-            </Button>
+            {user ? (
+              <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" size="icon" className="hover:bg-secondary">
+                    <Avatar>
+                      <AvatarImage src={user.photoURL || undefined} alt={user.displayName || user.email || 'User'} />
+                      <AvatarFallback>{user.displayName ? user.displayName[0] : 'U'}</AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Profile</DialogTitle>
+                    <DialogDescription>
+                      Signed in as {user.displayName || user.email}
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="flex flex-col items-center gap-4 py-4">
+                    <Avatar className="h-20 w-20">
+                      <AvatarImage src={user.photoURL || undefined} alt={user.displayName || user.email || 'User'} />
+                      <AvatarFallback>{user.displayName ? user.displayName[0] : 'U'}</AvatarFallback>
+                    </Avatar>
+                    <div className="text-center">
+                      <div className="font-semibold text-lg">{user.displayName || 'No Name'}</div>
+                      <div className="text-muted-foreground text-sm">{user.email}</div>
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button variant="destructive" onClick={handleLogout} className="w-full">Log out</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            ) : (
+              <Link to="/login">
+                <Button variant="ghost" size="icon" className="hover:bg-secondary">
+                  <User className="w-5 h-5" />
+                </Button>
+              </Link>
+            )}
             <Link to="/cart">
               <Button variant="ghost" size="icon" className="hover:bg-secondary relative">
                 <ShoppingCart className="w-5 h-5" />
@@ -100,9 +147,45 @@ const Navbar = () => {
             <Button variant="ghost" size="icon" className="hover:bg-secondary">
               <Search className="w-5 h-5" />
             </Button>
-            <Button variant="ghost" size="icon" className="hover:bg-secondary">
-              <User className="w-5 h-5" />
-            </Button>
+            {user ? (
+              <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" size="icon" className="hover:bg-secondary">
+                    <Avatar>
+                      <AvatarImage src={user.photoURL || undefined} alt={user.displayName || user.email || 'User'} />
+                      <AvatarFallback>{user.displayName ? user.displayName[0] : 'U'}</AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Profile</DialogTitle>
+                    <DialogDescription>
+                      Signed in as {user.displayName || user.email}
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="flex flex-col items-center gap-4 py-4">
+                    <Avatar className="h-20 w-20">
+                      <AvatarImage src={user.photoURL || undefined} alt={user.displayName || user.email || 'User'} />
+                      <AvatarFallback>{user.displayName ? user.displayName[0] : 'U'}</AvatarFallback>
+                    </Avatar>
+                    <div className="text-center">
+                      <div className="font-semibold text-lg">{user.displayName || 'No Name'}</div>
+                      <div className="text-muted-foreground text-sm">{user.email}</div>
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button variant="destructive" onClick={handleLogout} className="w-full">Log out</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            ) : (
+              <Link to="/login">
+                <Button variant="ghost" size="icon" className="hover:bg-secondary">
+                  <User className="w-5 h-5" />
+                </Button>
+              </Link>
+            )}
             <Link to="/cart">
               <Button variant="ghost" size="icon" className="hover:bg-secondary relative">
                 <ShoppingCart className="w-5 h-5" />

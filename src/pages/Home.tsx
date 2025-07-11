@@ -89,14 +89,14 @@ const Home = () => {
               <div className="relative animate-float">
                 <div className="absolute inset-0 bg-gradient-primary rounded-2xl transform rotate-6 opacity-20" />
                 <img
-                  src="https://images.unsplash.com/photo-1549652398-ead5f89a3bd8?w=600&h=600&fit=crop"
+                  src="https://i.pinimg.com/1200x/1b/01/fb/1b01fbf1b02b0c1ba2a9ee01ccf99ec5.jpg"
                   alt="Beautiful gift basket"
                   className="relative rounded-2xl shadow-elegant w-full h-96 object-cover"
                 />
                 <div className="absolute -bottom-4 -right-4 bg-card border border-border rounded-lg p-4 shadow-card">
                   <div className="flex items-center space-x-2">
                     <Heart className="w-5 h-5 text-primary fill-primary" />
-                    <span className="text-sm font-medium">Made with Love</span>
+                    <span className="text-sm font-medium">Made with Passion</span>
                   </div>
                 </div>
               </div>

@@ -8,8 +8,8 @@ export const sampleProducts: Product[] = [
     description: 'Perfect for a cozy evening with your loved one. Includes gourmet chocolates, wine, candles, and romantic essentials.',
     category: 'Romance',
     images: [
-      'https://images.unsplash.com/photo-1549652398-ead5f89a3bd8?w=500&h=400&fit=crop',
-      'https://images.unsplash.com/photo-1566479179817-c3b08e1bb3a3?w=500&h=400&fit=crop'
+      'https://i.pinimg.com/736x/82/99/c7/8299c704b9b876da351f280825113cde.jpg',
+      'https://i.pinimg.com/736x/b5/ea/19/b5ea19449c36c2fdb595268d7ec43194.jpg'
     ],
     stock: 15,
     isCustomizable: true,

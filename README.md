@@ -62,8 +62,8 @@ CharmCraft Gift Emporium is an e-commerce platform specializing in curated and c
 ## Getting Started
 
 1. **Clone the repository:**
-   ```sh
-   git clone <YOUR_GIT_URL>
+```sh
+git clone <YOUR_GIT_URL>
    cd charmcraft-gift-emporium
    ```
 
@@ -74,8 +74,8 @@ CharmCraft Gift Emporium is an e-commerce platform specializing in curated and c
 
 3. **Start the development server:**
    ```sh
-   npm run dev
-   ```
+npm run dev
+```
 
 4. **Open in your browser:**  
    Visit [http://localhost:8080](http://localhost:8080) (or the port shown in your terminal).
